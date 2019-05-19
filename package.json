@@ -9,8 +9,10 @@
     "prestart": "npm run build",
     "start": "node -r dotenv/config .",
     "start:watch": "nodemon",
-    "test": "mocha src/*.spec.ts src/**/*.spec.ts",
+    "test:lint": "tslint -c tslint.json -p tsconfig.json",
+    "test:unit-tests": "mocha src/*.spec.ts src/**/*.spec.ts",
     "test:coverage": "nyc mocha src/*.spec.ts src/**/*.spec.ts",
+    "test": "npm run test:lint && npm run test:unit-tests",
     "seed": "ts-node -r dotenv/config ./src/seeds/run.ts"
   },
   "author": "",
@@ -27,6 +29,7 @@
     "@types/node": "^12.0.2",
     "@types/supertest": "^2.0.7",
     "chai": "^4.2.0",
+    "husky": "^2.3.0",
     "mocha": "^6.1.4",
     "mongodb-memory-server": "^5.1.2",
     "nodemon": "^1.19.0",
@@ -80,5 +83,11 @@
       "text"
     ],
     "all": true
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm test",
+      "pre-push": "npm test"
+    }
   }
 }

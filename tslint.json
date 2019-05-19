@@ -3,7 +3,12 @@
   "jsRules": {},
   "rules": {
     "trailing-comma": [true],
-    "no-console": false
+    "no-console": false,
+    "only-arrow-functions": false,
+    "ordered-imports": false,
+    "curly": false,
+    "no-implicit-dependencies": false,
+    "no-submodule-imports": false
   },
   "rulesDirectory": [],
   "extends": ["tslint:latest", "tslint-config-prettier"]

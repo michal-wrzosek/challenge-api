@@ -1,0 +1,7 @@
+--recursive
+-r ts-node/register
+-r source-map-support/register
+--file "./test/setup-envs.js"
+--file "./test/setup-mongo.js"
+--slow 1000
+--timeout 60000

@@ -5,7 +5,7 @@ import app from "./app";
 connect(MONGODB_URI)
   .then(() => {
     app.listen(PORT, () => {
-      console.log(`Server started at http://localhost:${PORT}`);
+      console.log(`App listening on port ${PORT}`);
     });
   })
   .catch((err) => {

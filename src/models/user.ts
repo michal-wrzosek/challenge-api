@@ -1,12 +1,12 @@
-import { Schema, model, Document, Types } from "mongoose";
+import { Schema, model, Document } from "mongoose";
 import { hash, compare } from "bcrypt";
 
-export interface IUser {
+export interface UserType {
   email: string;
   password: string;
 }
 
-export type TUserModel = IUser &
+export type UserModel = UserType &
   Document & {
     comparePassword: (candidatePassword: string) => Promise<boolean>;
   };
@@ -16,7 +16,7 @@ const userSchema: Schema = new Schema({
   password: { type: String, required: true },
 });
 
-userSchema.pre<TUserModel>("save", function(next) {
+userSchema.pre<UserModel>("save", function(next) {
   // only hash the password if it has been modified (or is new)
   if (!this.isModified("password")) return next();
 
@@ -40,6 +40,6 @@ userSchema.methods.comparePassword = function comparePassword(
   });
 };
 
-const User = model<TUserModel>("User", userSchema);
+const User = model<UserModel>("User", userSchema);
 
 export default User;

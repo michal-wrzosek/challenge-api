@@ -6,16 +6,16 @@ import app from "../app";
 
 describe("src/routes/users", () => {
   describe("POST /api/v1/users/login", () => {
-    it("401, Auth failed - when wrong email", done => {
+    it("401, Auth failed - when wrong email", (done) => {
       request(app)
         .post("/api/v1/users/login")
-        .then(res => {
+        .then((res) => {
           const { message } = res.body.error;
           expect(res.status).to.equal(401);
           expect(message).to.equal("Auth failed");
           done();
         })
-        .catch(err => done(err));
+        .catch((err) => done(err));
     });
 
     it("401, Auth failed - when wrong password", async () => {

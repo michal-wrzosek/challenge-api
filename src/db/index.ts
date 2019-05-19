@@ -6,7 +6,7 @@ export function connect(dbURI: string) {
 
     mongoose
       .connect(dbURI, { useCreateIndex: true, useNewUrlParser: true })
-      .then(() => resolve(), err => reject(err));
+      .then(() => resolve(), (err) => reject(err));
   });
 }
 

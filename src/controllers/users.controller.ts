@@ -1,22 +1,22 @@
-import { Response, Request, NextFunction } from "express";
+import { Response, Request } from "express";
 
 import User from "../models/user";
 import { sendError } from "../middlewares/error.middleware";
 import HttpException from "../exceptions/HttpException";
 import { sendAuthError, getToken } from "../middlewares/auth.middleware";
 
-export function login(req: Request, res: Response, next: NextFunction) {
+export function login(req: Request, res: Response) {
   const { email, password } = req.body;
 
   User.findOne({ email })
     .exec()
-    .then(user => {
+    .then((user) => {
       // No such user
       if (!user) return sendAuthError(res);
 
       user
         .comparePassword(password)
-        .then(isMatch => {
+        .then((isMatch) => {
           // Wrong password
           if (!isMatch) return sendAuthError(res);
 
@@ -26,12 +26,12 @@ export function login(req: Request, res: Response, next: NextFunction) {
             token,
           });
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err);
           return sendError(new HttpException(), res);
         });
     })
-    .catch(err => {
+    .catch((err) => {
       console.error(err);
       return sendError(new HttpException(), res);
     });

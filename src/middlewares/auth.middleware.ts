@@ -1,23 +1,22 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { Types } from "mongoose";
 
 import { JWT_SECRET } from "../configuration/envs";
 import { sendError } from "./error.middleware";
 import HttpException from "../exceptions/HttpException";
-import { TUserModel } from "../models/user";
+import { UserModel } from "../models/user";
 
-export interface IUserData {
-  id: TUserModel["_id"];
-  email: TUserModel["email"];
+export interface UserData {
+  id: UserModel["_id"];
+  email: UserModel["email"];
 }
 
-export interface IAuthRequest extends Request {
-  userData?: IUserData;
+export interface AuthRequest extends Request {
+  userData?: UserData;
 }
 
-export function getToken(user: TUserModel) {
-  const userData: IUserData = {
+export function getToken(user: UserModel) {
+  const userData: UserData = {
     email: user.email,
     id: user._id,
   };
@@ -32,7 +31,7 @@ export function sendAuthError(res: Response) {
 }
 
 export function authMiddleware(
-  req: IAuthRequest,
+  req: AuthRequest,
   res: Response,
   next: NextFunction
 ) {
@@ -40,7 +39,7 @@ export function authMiddleware(
     const { authorization } = req.headers;
     const token = authorization.split("Bearer ")[1];
 
-    const decoded = jwt.verify(token, JWT_SECRET) as IUserData;
+    const decoded = jwt.verify(token, JWT_SECRET) as UserData;
     req.userData = decoded;
     next();
   } catch (err) {

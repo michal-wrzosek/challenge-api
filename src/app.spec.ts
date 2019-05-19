@@ -5,10 +5,10 @@ import app from "./app";
 
 describe("src/app", () => {
   describe("Not Found response", () => {
-    it("Returns 404", done => {
+    it("Returns 404", (done) => {
       request(app)
         .get("/not_existing_endpoint")
-        .then(res => {
+        .then((res) => {
           const {
             error: { message },
           } = res.body;
@@ -16,7 +16,7 @@ describe("src/app", () => {
           expect(res.status).to.be.equal(404);
           done();
         })
-        .catch(err => done(err));
+        .catch((err) => done(err));
     });
   });
 });

@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 
 import HttpException from "../exceptions/HttpException";
 
@@ -17,7 +17,7 @@ function errorMiddleware(
   err: HttpException,
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction // eslint-disable-line @typescript-eslint/no-unused-vars
 ) {
   sendError(err, res);
 }

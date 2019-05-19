@@ -3,15 +3,18 @@
 // *
 
 import { createMasterUser } from "./createMasterUser";
-import { MONGO_DB } from "../configuration/envs";
+import { MONGODB_URI } from "../configuration/envs";
 import { connect, close } from "../db";
 
-run();
-
 async function run() {
-  const seeds: { [key: string]: () => Promise<any> } = {
+  const seeds: { [key: string]: () => Promise<void> } = {
     createMasterUser,
   };
+
+  function listSeeds() {
+    console.log("Available seeds:");
+    Object.keys(seeds).forEach((seedName) => console.log(` - ${seedName}`));
+  }
 
   const seedToRun = process.argv[2];
 
@@ -29,7 +32,7 @@ async function run() {
 
   try {
     console.log("Connecting to database");
-    await connect(MONGO_DB);
+    await connect(MONGODB_URI);
 
     console.log(`Running ${seedToRun} seed`);
     await seeds[seedToRun]();
@@ -41,9 +44,6 @@ async function run() {
 
   console.log("Closing database connection.");
   close();
-
-  function listSeeds() {
-    console.log("Available seeds:");
-    Object.keys(seeds).forEach(seedName => console.log(` - ${seedName}`));
-  }
 }
+
+run();

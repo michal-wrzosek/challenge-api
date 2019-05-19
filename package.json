@@ -4,13 +4,13 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
+    "prebuild": "eslint src/**/*.ts --fix",
     "build": "tsc",
     "prestart": "npm run build",
     "start": "node -r dotenv/config .",
     "start:prod": "npm run build && node .",
     "start:watch": "nodemon",
-    "test:lint": "tslint -c tslint.json -p tsconfig.json",
+    "test:lint": "eslint src/**/*.ts",
     "test:unit-tests": "mocha src/*.spec.ts src/**/*.spec.ts",
     "test:coverage": "nyc mocha src/*.spec.ts src/**/*.spec.ts",
     "test": "npm run test:lint && npm run test:unit-tests",
@@ -29,18 +29,21 @@
     "@types/morgan": "^1.7.35",
     "@types/node": "^12.0.2",
     "@types/supertest": "^2.0.7",
+    "@typescript-eslint/eslint-plugin": "^1.9.0",
+    "@typescript-eslint/parser": "^1.9.0",
     "chai": "^4.2.0",
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^4.3.0",
+    "eslint-plugin-prettier": "^3.1.0",
     "husky": "^2.3.0",
     "mocha": "^6.1.4",
     "mongodb-memory-server": "^5.1.2",
     "nodemon": "^1.19.0",
     "nyc": "^14.1.1",
-    "prettier": "1.17.1",
+    "prettier": "^1.17.1",
     "source-map-support": "^0.5.12",
     "supertest": "^4.0.2",
     "ts-node": "^8.1.0",
-    "tslint": "^5.16.0",
-    "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.4.5"
   },
   "dependencies": {
@@ -52,9 +55,6 @@
     "mongoose": "^5.5.9",
     "morgan": "^1.9.1"
   },
-  "_moduleAliases": {
-    "@src": "./src"
-  },
   "nodemonConfig": {
     "ignore": [
       "**/*.spec.ts",
@@ -62,8 +62,7 @@
       "node_modules"
     ],
     "watch": [
-      "src",
-      "index.ts"
+      "src"
     ],
     "exec": "npm start",
     "ext": "ts"

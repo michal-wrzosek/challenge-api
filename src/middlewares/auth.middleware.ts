@@ -7,7 +7,6 @@ import HttpException from "../exceptions/HttpException";
 import { UserModel } from "../models/user";
 
 export interface UserData {
-  id: UserModel["_id"];
   email: UserModel["email"];
 }
 
@@ -18,7 +17,6 @@ export interface AuthRequest extends Request {
 export function getToken(user: UserModel) {
   const userData: UserData = {
     email: user.email,
-    id: user._id,
   };
 
   return jwt.sign(userData, JWT_SECRET, {

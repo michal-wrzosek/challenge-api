@@ -26,6 +26,7 @@
     "@types/mocha": "^5.2.6",
     "@types/mongodb-memory-server": "^1.8.0",
     "@types/mongoose": "^5.5.1",
+    "@types/mongoose-paginate-v2": "^1.0.2",
     "@types/morgan": "^1.7.35",
     "@types/node": "^12.0.2",
     "@types/supertest": "^2.0.7",
@@ -53,6 +54,7 @@
     "express": "^4.17.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.5.9",
+    "mongoose-paginate-v2": "^1.2.1",
     "morgan": "^1.9.1"
   },
   "nodemonConfig": {

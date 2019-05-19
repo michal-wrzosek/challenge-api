@@ -8,6 +8,7 @@ import usersRoutes from "./routes/users.routes";
 import notFoundMiddleware from "./middlewares/notFound.middleware";
 import errorMiddleware from "./middlewares/error.middleware";
 import { CORSMiddleware } from "./middlewares/CORS.middleware";
+import providersRoutes from "./routes/providers.routes";
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use(CORSMiddleware);
 
 // Routes
 app.use("/api/v1/users", usersRoutes);
+app.use("/api/v1/providers", providersRoutes);
 
 // Error middlewares
 app.use(notFoundMiddleware);

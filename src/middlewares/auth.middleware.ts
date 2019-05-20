@@ -4,18 +4,20 @@ import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../configuration/envs";
 import { sendError } from "./error.middleware";
 import HttpException from "../exceptions/HttpException";
-import { UserModel } from "../models/user";
+import { UserModelProps } from "../models/user";
 
 export interface UserData {
-  email: UserModel["email"];
+  _id: UserModelProps["_id"];
+  email: UserModelProps["email"];
 }
 
 export interface AuthRequest extends Request {
   userData?: UserData;
 }
 
-export function getToken(user: UserModel) {
+export function getToken(user: UserModelProps) {
   const userData: UserData = {
+    _id: user._id.toString(),
     email: user.email,
   };
 

@@ -16,9 +16,13 @@ export interface ProviderProps {
   drgDefinition: string;
 }
 
+export interface ProviderSerializedProps extends ProviderProps {
+  _id: string;
+}
+
 export interface ProviderModelProps extends ProviderProps, Document {}
-export interface ProviderModel<T extends Document> extends PaginateModel<T> {
-  serialize: (props: ProviderModelProps) => ProviderProps;
+export interface ProviderModel extends PaginateModel<ProviderModelProps> {
+  serialize: (provider: ProviderModelProps) => ProviderSerializedProps;
 }
 
 const providerSchema: Schema = new Schema({
@@ -37,8 +41,9 @@ const providerSchema: Schema = new Schema({
 });
 
 providerSchema.statics.serialize = (
-  provider: ProviderProps
-): ProviderProps => ({
+  provider: ProviderModelProps
+): ProviderSerializedProps => ({
+  _id: provider._id.toString(),
   providerId: provider.providerId,
   name: provider.name,
   street: provider.street,
@@ -55,8 +60,6 @@ providerSchema.statics.serialize = (
 
 providerSchema.plugin(mongoosePaginate);
 
-const Provider = model("Provider", providerSchema) as ProviderModel<
-  ProviderModelProps
->;
+const Provider = model("Provider", providerSchema) as ProviderModel;
 
 export default Provider;

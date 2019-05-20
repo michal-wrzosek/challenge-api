@@ -20,6 +20,5 @@ export const providerFixtures = async (nrOfRecordsToGenerate: number) => {
   const records = fixtureFactory(providersFactoryInstructions, {
     nrOfRecordsToGenerate,
   });
-  await Provider.insertMany(records);
-  return records;
+  return await Provider.insertMany(records);
 };

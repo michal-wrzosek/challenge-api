@@ -1,15 +1,13 @@
-import mongoose from "mongoose";
+import db from "mongoose";
 
-export function connect(dbURI: string) {
-  return new Promise((resolve, reject) => {
-    mongoose.Promise = global.Promise;
+db.Promise = global.Promise;
 
-    mongoose
-      .connect(dbURI, { useCreateIndex: true, useNewUrlParser: true })
-      .then(() => resolve(), (err) => reject(err));
-  });
+export async function connect(dbURI: string) {
+  await db.connect(dbURI, { useCreateIndex: true, useNewUrlParser: true });
 }
 
-export function close() {
-  mongoose.disconnect();
+export async function disconnect() {
+  await db.disconnect();
 }
+
+export const connection = db.connection;

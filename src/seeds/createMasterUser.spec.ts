@@ -6,7 +6,7 @@ import { createMasterUser } from "./createMasterUser";
 
 describe("seeds/createMasterUser", () => {
   it("creates a new user", async () => {
-    await createMasterUser();
+    await createMasterUser(() => {});
     const user = await User.findOne({ email: MASTER_USER_EMAIL }).exec();
 
     expect(!!user).to.equal(true);

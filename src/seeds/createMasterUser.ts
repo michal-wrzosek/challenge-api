@@ -5,8 +5,8 @@
 import User, { UserProps } from "../models/user";
 import { MASTER_USER_EMAIL, MASTER_USER_PASSWORD } from "../configuration/envs";
 
-export async function createMasterUser() {
-  console.log("Creating new master user...");
+export async function createMasterUser(consoleLog: (...args: any[]) => void) {
+  consoleLog("Creating new master user...");
 
   const props: UserProps = {
     email: MASTER_USER_EMAIL,
@@ -16,5 +16,5 @@ export async function createMasterUser() {
   const user = new User(props);
 
   await user.save();
-  console.log("Master user created successfully");
+  consoleLog("Master user created successfully");
 }

@@ -50,10 +50,4 @@ export enum US_STATES {
   WI = "WI",
   WY = "WY",
   DC = "DC",
-  AS = "AS",
-  GU = "GU",
-  MP = "MP",
-  PR = "PR",
-  UM = "UM",
-  VI = "VI",
 }

@@ -45,6 +45,15 @@ This endpoint let's you receive a list of Providers. This endpoint needs a valid
 GET /api/v1/providers
 ```
 
+**Pagination:**
+This endpoint is paginated. 10 records per page by default. (Min 1, max 50)
+
+**Filters:**
+You can filter results. Check "Parameters" section.
+
+**Projection:**
+You can select which fields should be returned. All are visible by default. Check "Parameters" section.
+
 **Parameters:**
 
 ```
@@ -69,6 +78,27 @@ Filters query params:
   - filters avgMedicarePayments column
 - state: string (ISO 3166-2 Code like "DC")
   - filters state column
+
+Projection query params:
+- project: string
+  - one of:
+    - providerId
+    - name
+    - street
+    - city
+    - state
+    - zipcode
+    - hospitalReferralRegionDesc
+    - totalDischarges
+    - avgCoveredCharges
+    - avgTotalPayments
+    - avgMedicarePayments
+    - drgDefinition
+  - when using this param you can control which field should be returned
+  - you can project multiple columns like this:
+    - /api/v1/providers?project=name&project=street
+    - this will return only "_id", "name" and "street" fields
+  - "_id" field will always be returned
 
 Pagination query params:
 - page: number (positive integer to select current page)

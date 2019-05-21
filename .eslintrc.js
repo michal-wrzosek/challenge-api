@@ -10,7 +10,6 @@ module.exports = {
     sourceType: "module", // Allows for the use of imports
   },
   rules: {
-    'max-len': ["error", { "code": 120 }],
     "no-unused-vars": ["error", { argsIgnorePattern: "next" }],
     "@typescript-eslint/explicit-function-return-type": false,
     "@typescript-eslint/explicit-member-accessibility": false,

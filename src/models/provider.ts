@@ -16,8 +16,20 @@ export interface ProviderProps {
   drgDefinition: string;
 }
 
-export interface ProviderSerializedProps extends ProviderProps {
+export interface ProviderSerializedProps {
   _id: string;
+  providerId: string;
+  name: string;
+  street: string;
+  city: string;
+  state: string;
+  zipcode: string;
+  hospitalReferralRegionDesc: string;
+  totalDischarges: number;
+  avgCoveredCharges: number;
+  avgTotalPayments: number;
+  avgMedicarePayments: number;
+  drgDefinition: string;
 }
 
 export interface ProviderModelProps extends ProviderProps, Document {}

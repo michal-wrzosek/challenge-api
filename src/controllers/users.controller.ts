@@ -8,7 +8,7 @@ import { sendAuthError, getToken } from "../middlewares/auth.middleware";
 export function login(req: Request, res: Response) {
   const { email, password } = req.body;
 
-  User.findOne({ email })
+  User.findOne({ email }, "+password")
     .exec()
     .then((user) => {
       // No such user

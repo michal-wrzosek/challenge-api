@@ -318,5 +318,117 @@ describe("src/routes/providers", () => {
         .to.be.greaterThan(0)
         .and.equal(providers.length);
     });
+
+    it("200, OK - select one field", async () => {
+      const authorizationHeader = await getAuthorizationHeader();
+      await providerFixtures(10);
+
+      const res = await request(app)
+        .get("/api/v1/providers?project=name")
+        .set("Authorization", authorizationHeader);
+      const {
+        data: { providers },
+        pagination,
+      } = res.body as {
+        data: { providers: ProviderProps[] };
+        pagination: Pagination;
+      };
+
+      expect(res.status).to.equal(200);
+      expect(providers).to.be.an("array");
+      expect(providers.length).to.equal(10);
+      expect(pagination.page).to.equal(1);
+      expect(pagination.limit).to.equal(10);
+      expect(pagination.totalDocs).to.equal(10);
+      expect(pagination.totalPages).to.equal(1);
+      expect(pagination.prevPage).to.equal(null);
+      expect(pagination.nextPage).to.equal(null);
+
+      const returnedExampleProvider = providers[0];
+      expect(Object.keys(returnedExampleProvider)).to.eql(["_id", "name"]);
+    });
+
+    it("200, OK - select multiple fields", async () => {
+      const authorizationHeader = await getAuthorizationHeader();
+      await providerFixtures(10);
+
+      const query = [
+        "project=name",
+        "project=hospitalReferralRegionDesc",
+        "project=avgCoveredCharges",
+        "project=avgMedicarePayments",
+      ].join("&");
+
+      const res = await request(app)
+        .get(`/api/v1/providers?${query}`)
+        .set("Authorization", authorizationHeader);
+      const {
+        data: { providers },
+        pagination,
+      } = res.body as {
+        data: { providers: ProviderProps[] };
+        pagination: Pagination;
+      };
+
+      expect(res.status).to.equal(200);
+      expect(providers).to.be.an("array");
+      expect(providers.length).to.equal(10);
+      expect(pagination.page).to.equal(1);
+      expect(pagination.limit).to.equal(10);
+      expect(pagination.totalDocs).to.equal(10);
+      expect(pagination.totalPages).to.equal(1);
+      expect(pagination.prevPage).to.equal(null);
+      expect(pagination.nextPage).to.equal(null);
+
+      const returnedExampleProvider = providers[0];
+      expect(Object.keys(returnedExampleProvider)).to.eql([
+        "_id",
+        "name",
+        "hospitalReferralRegionDesc",
+        "avgCoveredCharges",
+        "avgMedicarePayments",
+      ]);
+    });
+
+    it("400, OK - when select wrong field", async () => {
+      const authorizationHeader = await getAuthorizationHeader();
+      await providerFixtures(10);
+
+      const res = await request(app)
+        .get(`/api/v1/providers?project=wrongField`)
+        .set("Authorization", authorizationHeader);
+      const {
+        error: { message },
+      } = res.body;
+
+      expect(res.status).to.equal(400);
+      expect(message).to.equal(
+        `Bad Request: "project" must be one of [providerId, name, street, city, state, zipcode, hospitalReferralRegionDesc, totalDischarges, avgCoveredCharges, avgTotalPayments, avgMedicarePayments, drgDefinition] and "project" must be an array`
+      );
+    });
+
+    it("400, OK - when select wrong fields", async () => {
+      const authorizationHeader = await getAuthorizationHeader();
+      await providerFixtures(10);
+
+      const query = [
+        "project=name",
+        "project=hospitalReferralRegionDesc",
+        "project=avgCoveredCharges",
+        "project=notExistingOne",
+      ].join("&");
+
+      const res = await request(app)
+        .get(`/api/v1/providers?${query}`)
+        .set("Authorization", authorizationHeader);
+      const {
+        error: { message },
+      } = res.body;
+
+      expect(res.status).to.equal(400);
+      expect(message).to.equal(
+        `Bad Request: "project" must be a string and "3" must be one of [providerId, name, street, city, state, zipcode, hospitalReferralRegionDesc, totalDischarges, avgCoveredCharges, avgTotalPayments, avgMedicarePayments, drgDefinition]`
+      );
+    });
   });
 });

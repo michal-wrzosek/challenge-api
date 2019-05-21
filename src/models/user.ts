@@ -7,8 +7,9 @@ export interface UserProps {
   password: string;
 }
 
-export interface UserSerializedProps extends UserProps {
+export interface UserSerializedProps {
   _id: string;
+  email: string;
 }
 
 export interface UserModelProps extends UserProps, Document {
@@ -21,13 +22,12 @@ export interface UserModel extends PaginateModel<UserModelProps> {
 
 const userSchema: Schema = new Schema({
   email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  password: { type: String, required: true, select: false },
 });
 
 userSchema.statics.serialize = (provider: UserModelProps): UserSerializedProps => ({
   _id: provider._id.toString(),
   email: provider.email,
-  password: provider.password,
 });
 
 userSchema.pre<UserModelProps>("save", function(next) {

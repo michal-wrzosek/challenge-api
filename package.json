@@ -16,7 +16,7 @@
     "test:coverage": "nyc mocha src/*.spec.ts src/**/*.spec.ts",
     "test": "npm run test:lint && npm run test:unit-tests",
     "seed": "ts-node -r dotenv/config ./src/seeds/run.ts",
-    "githook": "npm run test:lint:fix"
+    "githook": "npm run test:lint:fix && npm run test:unit-tests"
   },
   "author": "",
   "license": "ISC",

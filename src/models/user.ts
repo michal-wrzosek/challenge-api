@@ -24,9 +24,7 @@ const userSchema: Schema = new Schema({
   password: { type: String, required: true },
 });
 
-userSchema.statics.serialize = (
-  provider: UserModelProps
-): UserSerializedProps => ({
+userSchema.statics.serialize = (provider: UserModelProps): UserSerializedProps => ({
   _id: provider._id.toString(),
   email: provider.email,
   password: provider.password,
@@ -45,9 +43,7 @@ userSchema.pre<UserModelProps>("save", function(next) {
   });
 });
 
-userSchema.methods.comparePassword = function comparePassword(
-  candidatePassword: string
-) {
+userSchema.methods.comparePassword = function comparePassword(candidatePassword: string) {
   return new Promise((resolve, reject) => {
     compare(candidatePassword, this.password, (err, isMatch) => {
       if (err) return reject(err);

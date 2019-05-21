@@ -4,44 +4,66 @@ import request from "supertest";
 import app from "../app";
 import { Pagination } from "../lib/pagination";
 import Provider, { ProviderProps } from "../models/provider";
-import {
-  providerFixtures,
-  providersFactoryInstructions,
-} from "../models/provider.fixtures";
+import { providerFixtures, providersFactoryInstructions } from "../models/provider.fixtures";
 import { fixtureFactory } from "../test/fixtureFactory";
 import { US_STATES } from "../types/USStates";
+import User from "../models/user";
+
+const getAuthorizationHeader = async () => {
+  const email = "test@email.com";
+  const password = "test_PASSW0RD";
+
+  await new User({ email, password }).save();
+
+  const res = await request(app)
+    .post("/api/v1/users/login")
+    .send({ email, password });
+
+  return `Bearer ${res.body.token}`;
+};
 
 describe("src/routes/providers", () => {
   describe("GET /api/v1/providers", () => {
-    it("200, OK - default, empty db", (done) => {
-      request(app)
+    it("401, OK - Auth failed when accessing without token", async () => {
+      const res = await request(app).get("/api/v1/providers");
+
+      expect(res.status).to.equal(401);
+      expect(res.body.error.message).to.equal(`Auth failed`);
+    });
+
+    it("200, OK - default, empty db", async () => {
+      const authorizationHeader = await getAuthorizationHeader();
+
+      const res = await request(app)
         .get("/api/v1/providers")
-        .then((res) => {
-          const {
-            data: { providers },
-            pagination,
-          } = res.body as {
-            data: { providers: ProviderProps[] };
-            pagination: Pagination;
-          };
-          expect(res.status).to.equal(200);
-          expect(providers).to.be.an("array");
-          expect(providers.length).to.equal(0);
-          expect(pagination.page).to.equal(1);
-          expect(pagination.limit).to.equal(10);
-          expect(pagination.totalDocs).to.equal(0);
-          expect(pagination.totalPages).to.equal(1);
-          expect(pagination.prevPage).to.equal(null);
-          expect(pagination.nextPage).to.equal(null);
-          done();
-        })
-        .catch((err) => done(err));
+        .set("Authorization", authorizationHeader);
+
+      const {
+        data: { providers },
+        pagination,
+      } = res.body as {
+        data: { providers: ProviderProps[] };
+        pagination: Pagination;
+      };
+
+      expect(res.status).to.equal(200);
+      expect(providers).to.be.an("array");
+      expect(providers.length).to.equal(0);
+      expect(pagination.page).to.equal(1);
+      expect(pagination.limit).to.equal(10);
+      expect(pagination.totalDocs).to.equal(0);
+      expect(pagination.totalPages).to.equal(1);
+      expect(pagination.prevPage).to.equal(null);
+      expect(pagination.nextPage).to.equal(null);
     });
 
     it("200, OK - default", async () => {
+      const authorizationHeader = await getAuthorizationHeader();
       const createdProviders = await providerFixtures(100);
 
-      const res = await request(app).get("/api/v1/providers");
+      const res = await request(app)
+        .get("/api/v1/providers")
+        .set("Authorization", authorizationHeader);
       const {
         data: { providers },
         pagination,
@@ -62,17 +84,18 @@ describe("src/routes/providers", () => {
 
       const returnedExampleProvider = providers[0];
       const createdExampleProvider = Provider.serialize(
-        createdProviders.find(
-          (p) => p.providerId === returnedExampleProvider.providerId
-        )
+        createdProviders.find((p) => p.providerId === returnedExampleProvider.providerId)
       );
       expect(returnedExampleProvider).to.deep.equal(createdExampleProvider);
     });
 
     it("200, OK - pagination, default use", async () => {
+      const authorizationHeader = await getAuthorizationHeader();
       await providerFixtures(30);
 
-      const res = await request(app).get("/api/v1/providers?page=2&limit=5");
+      const res = await request(app)
+        .get("/api/v1/providers?page=2&limit=5")
+        .set("Authorization", authorizationHeader);
       const {
         data: { providers },
         pagination,
@@ -93,7 +116,10 @@ describe("src/routes/providers", () => {
     });
 
     it("400, OK - query validation for page and limit", async () => {
-      const res = await request(app).get("/api/v1/providers?page=-1&limit=51");
+      const authorizationHeader = await getAuthorizationHeader();
+      const res = await request(app)
+        .get("/api/v1/providers?page=-1&limit=51")
+        .set("Authorization", authorizationHeader);
 
       expect(res.status).to.equal(400);
       expect(res.body.error.message).to.equal(
@@ -102,11 +128,12 @@ describe("src/routes/providers", () => {
     });
 
     it("200, OK - max_discharges", async () => {
+      const authorizationHeader = await getAuthorizationHeader();
       await providerFixtures(50);
 
-      const res = await request(app).get(
-        "/api/v1/providers?limit=50&max_discharges=50"
-      );
+      const res = await request(app)
+        .get("/api/v1/providers?limit=50&max_discharges=50")
+        .set("Authorization", authorizationHeader);
       const {
         data: { providers },
       } = res.body as {
@@ -117,17 +144,16 @@ describe("src/routes/providers", () => {
       expect(res.status).to.equal(200);
       expect(providers).to.be.an("array");
 
-      expect(providers.filter((p) => p.totalDischarges > 50).length).to.equal(
-        0
-      );
+      expect(providers.filter((p) => p.totalDischarges > 50).length).to.equal(0);
     });
 
     it("200, OK - min_discharges", async () => {
+      const authorizationHeader = await getAuthorizationHeader();
       await providerFixtures(50);
 
-      const res = await request(app).get(
-        "/api/v1/providers?limit=50&min_discharges=50"
-      );
+      const res = await request(app)
+        .get("/api/v1/providers?limit=50&min_discharges=50")
+        .set("Authorization", authorizationHeader);
       const {
         data: { providers },
       } = res.body as {
@@ -138,17 +164,16 @@ describe("src/routes/providers", () => {
       expect(res.status).to.equal(200);
       expect(providers).to.be.an("array");
 
-      expect(providers.filter((p) => p.totalDischarges < 50).length).to.equal(
-        0
-      );
+      expect(providers.filter((p) => p.totalDischarges < 50).length).to.equal(0);
     });
 
     it("200, OK - max_average_covered_charges", async () => {
+      const authorizationHeader = await getAuthorizationHeader();
       await providerFixtures(50);
 
-      const res = await request(app).get(
-        "/api/v1/providers?limit=50&max_average_covered_charges=50"
-      );
+      const res = await request(app)
+        .get("/api/v1/providers?limit=50&max_average_covered_charges=50")
+        .set("Authorization", authorizationHeader);
       const {
         data: { providers },
       } = res.body as {
@@ -159,17 +184,16 @@ describe("src/routes/providers", () => {
       expect(res.status).to.equal(200);
       expect(providers).to.be.an("array");
 
-      expect(providers.filter((p) => p.avgCoveredCharges > 50).length).to.equal(
-        0
-      );
+      expect(providers.filter((p) => p.avgCoveredCharges > 50).length).to.equal(0);
     });
 
     it("200, OK - min_average_covered_charges", async () => {
+      const authorizationHeader = await getAuthorizationHeader();
       await providerFixtures(50);
 
-      const res = await request(app).get(
-        "/api/v1/providers?limit=50&min_average_covered_charges=50"
-      );
+      const res = await request(app)
+        .get("/api/v1/providers?limit=50&min_average_covered_charges=50")
+        .set("Authorization", authorizationHeader);
       const {
         data: { providers },
       } = res.body as {
@@ -180,17 +204,16 @@ describe("src/routes/providers", () => {
       expect(res.status).to.equal(200);
       expect(providers).to.be.an("array");
 
-      expect(providers.filter((p) => p.avgCoveredCharges < 50).length).to.equal(
-        0
-      );
+      expect(providers.filter((p) => p.avgCoveredCharges < 50).length).to.equal(0);
     });
 
     it("200, OK - max_average_medicare_payments", async () => {
+      const authorizationHeader = await getAuthorizationHeader();
       await providerFixtures(50);
 
-      const res = await request(app).get(
-        "/api/v1/providers?limit=50&max_average_medicare_payments=50"
-      );
+      const res = await request(app)
+        .get("/api/v1/providers?limit=50&max_average_medicare_payments=50")
+        .set("Authorization", authorizationHeader);
       const {
         data: { providers },
       } = res.body as {
@@ -201,17 +224,16 @@ describe("src/routes/providers", () => {
       expect(res.status).to.equal(200);
       expect(providers).to.be.an("array");
 
-      expect(
-        providers.filter((p) => p.avgMedicarePayments > 50).length
-      ).to.equal(0);
+      expect(providers.filter((p) => p.avgMedicarePayments > 50).length).to.equal(0);
     });
 
     it("200, OK - min_average_medicare_payments", async () => {
+      const authorizationHeader = await getAuthorizationHeader();
       await providerFixtures(50);
 
-      const res = await request(app).get(
-        "/api/v1/providers?limit=50&min_average_medicare_payments=50"
-      );
+      const res = await request(app)
+        .get("/api/v1/providers?limit=50&min_average_medicare_payments=50")
+        .set("Authorization", authorizationHeader);
       const {
         data: { providers },
       } = res.body as {
@@ -222,21 +244,20 @@ describe("src/routes/providers", () => {
       expect(res.status).to.equal(200);
       expect(providers).to.be.an("array");
 
-      expect(
-        providers.filter((p) => p.avgMedicarePayments < 50).length
-      ).to.equal(0);
+      expect(providers.filter((p) => p.avgMedicarePayments < 50).length).to.equal(0);
     });
 
     it("200, OK - state", async () => {
+      const authorizationHeader = await getAuthorizationHeader();
       const records = fixtureFactory(providersFactoryInstructions, {
         nrOfRecordsToGenerate: 50,
       });
       records[0].state = US_STATES["AK"];
       await Provider.insertMany(records);
 
-      const res = await request(app).get(
-        `/api/v1/providers?limit=50&state=${US_STATES["AK"]}`
-      );
+      const res = await request(app)
+        .get(`/api/v1/providers?limit=50&state=${US_STATES["AK"]}`)
+        .set("Authorization", authorizationHeader);
       const {
         data: { providers },
       } = res.body as {
@@ -253,9 +274,13 @@ describe("src/routes/providers", () => {
     });
 
     it("200, OK - fiters combined", async () => {
+      const authorizationHeader = await getAuthorizationHeader();
       const records = fixtureFactory(providersFactoryInstructions, {
         nrOfRecordsToGenerate: 50,
       });
+      records[0].totalDischarges = 50;
+      records[0].avgCoveredCharges = 50;
+      records[0].avgMedicarePayments = 50;
       records[0].state = US_STATES["AK"];
       await Provider.insertMany(records);
 
@@ -270,7 +295,9 @@ describe("src/routes/providers", () => {
         `state=${US_STATES["AK"]}`,
       ].join("&");
 
-      const res = await request(app).get(`/api/v1/providers?${query}`);
+      const res = await request(app)
+        .get(`/api/v1/providers?${query}`)
+        .set("Authorization", authorizationHeader);
       const {
         data: { providers },
       } = res.body as {
@@ -281,24 +308,12 @@ describe("src/routes/providers", () => {
       expect(res.status).to.equal(200);
       expect(providers).to.be.an("array");
 
-      expect(providers.filter((p) => p.totalDischarges > 90).length).to.equal(
-        0
-      );
-      expect(providers.filter((p) => p.totalDischarges < 10).length).to.equal(
-        0
-      );
-      expect(providers.filter((p) => p.avgCoveredCharges > 90).length).to.equal(
-        0
-      );
-      expect(providers.filter((p) => p.avgCoveredCharges < 10).length).to.equal(
-        0
-      );
-      expect(
-        providers.filter((p) => p.avgMedicarePayments > 90).length
-      ).to.equal(0);
-      expect(
-        providers.filter((p) => p.avgMedicarePayments < 10).length
-      ).to.equal(0);
+      expect(providers.filter((p) => p.totalDischarges > 90).length).to.equal(0);
+      expect(providers.filter((p) => p.totalDischarges < 10).length).to.equal(0);
+      expect(providers.filter((p) => p.avgCoveredCharges > 90).length).to.equal(0);
+      expect(providers.filter((p) => p.avgCoveredCharges < 10).length).to.equal(0);
+      expect(providers.filter((p) => p.avgMedicarePayments > 90).length).to.equal(0);
+      expect(providers.filter((p) => p.avgMedicarePayments < 10).length).to.equal(0);
       expect(providers.filter((p) => p.state === US_STATES["AK"]).length)
         .to.be.greaterThan(0)
         .and.equal(providers.length);

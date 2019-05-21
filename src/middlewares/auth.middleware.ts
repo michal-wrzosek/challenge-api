@@ -30,11 +30,7 @@ export function sendAuthError(res: Response) {
   return sendError(new HttpException(401, "Auth failed"), res);
 }
 
-export function authMiddleware(
-  req: AuthRequest,
-  res: Response,
-  next: NextFunction
-) {
+export function authMiddleware(req: AuthRequest, res: Response, next: NextFunction) {
   try {
     const { authorization } = req.headers;
     const token = authorization.split("Bearer ")[1];

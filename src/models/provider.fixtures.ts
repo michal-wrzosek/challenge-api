@@ -8,9 +8,7 @@ const getRandomFrom = (array: string[]) => () => {
 
 const getRandomState = getRandomFrom(Object.keys(US_STATES));
 
-export const providersFactoryInstructions: FactoryInstructions<
-  ProviderProps
-> = {
+export const providersFactoryInstructions: FactoryInstructions<ProviderProps> = {
   providerId: (i: number) => `provider_${i}`,
   name: (i: number) => `name_${i}`,
   street: (i: number) => `street_${i}`,

@@ -22,10 +22,11 @@ Header["Authorization"]: "Bearer your_token_here"
 
 ## Error responses
 
-All errors responses are structured in the same way.
+All errors responses are always structured in the same way:
 
 ```
 Status: 401, 404, 500
+
 JSON:
 - error:
   - message: string
@@ -38,7 +39,7 @@ This route lets you query "Providers" resource.
 
 #### GET /providers
 
-This endpoint let's you receive a list of Providers
+This endpoint let's you receive a list of Providers. This endpoint needs a valid token to be accessed (Read more: [Authentication](#authentication))
 
 ```
 GET /api/v1/providers

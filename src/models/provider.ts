@@ -40,9 +40,7 @@ const providerSchema: Schema = new Schema({
   drgDefinition: { type: String, required: true },
 });
 
-providerSchema.statics.serialize = (
-  provider: ProviderModelProps
-): ProviderSerializedProps => ({
+providerSchema.statics.serialize = (provider: ProviderModelProps): ProviderSerializedProps => ({
   _id: provider._id.toString(),
   providerId: provider.providerId,
   name: provider.name,

@@ -40,11 +40,7 @@ const getAllQuerySchema = Joi.object().keys({
   state: Joi.only(Object.keys(US_STATES)),
 });
 
-export function getAllValidation(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export function getAllValidation(req: Request, res: Response, next: NextFunction) {
   Joi.validate(req.query, getAllQuerySchema, { abortEarly: false }, (err) => {
     if (err) {
       const message = err.details.map((e) => e.message).join(" and ");
@@ -68,24 +64,12 @@ export async function getAll(req: Request, res: Response) {
   const state = req.query.state;
 
   const conditions_filters = [
-    ...(isSet(max_discharges)
-      ? [{ totalDischarges: { $lte: max_discharges } }]
-      : []),
-    ...(isSet(min_discharges)
-      ? [{ totalDischarges: { $gte: min_discharges } }]
-      : []),
-    ...(isSet(max_average_covered_charges)
-      ? [{ avgCoveredCharges: { $lte: max_average_covered_charges } }]
-      : []),
-    ...(isSet(min_average_covered_charges)
-      ? [{ avgCoveredCharges: { $gte: min_average_covered_charges } }]
-      : []),
-    ...(isSet(max_average_medicare_payments)
-      ? [{ avgMedicarePayments: { $lte: max_average_medicare_payments } }]
-      : []),
-    ...(isSet(min_average_medicare_payments)
-      ? [{ avgMedicarePayments: { $gte: min_average_medicare_payments } }]
-      : []),
+    ...(isSet(max_discharges) ? [{ totalDischarges: { $lte: max_discharges } }] : []),
+    ...(isSet(min_discharges) ? [{ totalDischarges: { $gte: min_discharges } }] : []),
+    ...(isSet(max_average_covered_charges) ? [{ avgCoveredCharges: { $lte: max_average_covered_charges } }] : []),
+    ...(isSet(min_average_covered_charges) ? [{ avgCoveredCharges: { $gte: min_average_covered_charges } }] : []),
+    ...(isSet(max_average_medicare_payments) ? [{ avgMedicarePayments: { $lte: max_average_medicare_payments } }] : []),
+    ...(isSet(min_average_medicare_payments) ? [{ avgMedicarePayments: { $gte: min_average_medicare_payments } }] : []),
     ...(isSet(state) ? [{ state }] : []),
   ];
 

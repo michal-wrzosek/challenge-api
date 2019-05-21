@@ -9,9 +9,7 @@ export interface Pagination {
   nextPage: number | null;
 }
 
-export const serializePagination = <T>(
-  results: PaginateResult<T>
-): Pagination => ({
+export const serializePagination = <T>(results: PaginateResult<T>): Pagination => ({
   totalDocs: results.totalDocs as number,
   limit: results.limit,
   page: results.page,

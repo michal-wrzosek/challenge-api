@@ -4,17 +4,19 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "prebuild": "eslint src/**/*.ts --fix",
+    "prebuild": "npm run test:lint:fix",
     "build": "tsc",
     "prestart": "npm run build",
     "start": "node -r dotenv/config .",
     "start:prod": "node .",
     "start:watch": "nodemon",
+    "test:lint:fix": "eslint src/**/*.ts --fix",
     "test:lint": "eslint src/**/*.ts",
     "test:unit-tests": "mocha src/*.spec.ts src/**/*.spec.ts",
     "test:coverage": "nyc mocha src/*.spec.ts src/**/*.spec.ts",
     "test": "npm run test:lint && npm run test:unit-tests",
-    "seed": "ts-node -r dotenv/config ./src/seeds/run.ts"
+    "seed": "ts-node -r dotenv/config ./src/seeds/run.ts",
+    "githook": "npm run test:lint:fix"
   },
   "author": "",
   "license": "ISC",
@@ -93,8 +95,8 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm test",
-      "pre-push": "npm test"
+      "pre-commit": "npm run githook",
+      "pre-push": "npm run githook"
     }
   }
 }

@@ -1,12 +1,21 @@
 import Provider, { ProviderProps } from "./provider";
 import { FactoryInstructions, fixtureFactory } from "../test/fixtureFactory";
+import { US_STATES } from "../types/USStates";
 
-const providersFactoryInstructions: FactoryInstructions<ProviderProps> = {
+const getRandomFrom = (array: string[]) => () => {
+  return array[Math.round(Math.random() * (array.length - 1))];
+};
+
+const getRandomState = getRandomFrom(Object.keys(US_STATES));
+
+export const providersFactoryInstructions: FactoryInstructions<
+  ProviderProps
+> = {
   providerId: (i: number) => `provider_${i}`,
   name: (i: number) => `name_${i}`,
   street: (i: number) => `street_${i}`,
   city: (i: number) => `city_${i}`,
-  state: (i: number) => `state_${i}`,
+  state: getRandomState,
   zipcode: (i: number) => `zipcode_${i}`,
   hospitalReferralRegionDesc: (i: number) => `hospitalReferralRegionDesc_${i}`,
   totalDischarges: () => Math.floor(Math.random() * 100),

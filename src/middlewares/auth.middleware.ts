@@ -4,21 +4,21 @@ import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../configuration/envs";
 import { sendError } from "./error.middleware";
 import HttpException from "../exceptions/HttpException";
-import { UserModel } from "../models/user";
+import { UserModelProps } from "../models/user";
 
 export interface UserData {
-  id: UserModel["_id"];
-  email: UserModel["email"];
+  _id: UserModelProps["_id"];
+  email: UserModelProps["email"];
 }
 
 export interface AuthRequest extends Request {
   userData?: UserData;
 }
 
-export function getToken(user: UserModel) {
+export function getToken(user: UserModelProps) {
   const userData: UserData = {
+    _id: user._id.toString(),
     email: user.email,
-    id: user._id,
   };
 
   return jwt.sign(userData, JWT_SECRET, {
@@ -30,11 +30,7 @@ export function sendAuthError(res: Response) {
   return sendError(new HttpException(401, "Auth failed"), res);
 }
 
-export function authMiddleware(
-  req: AuthRequest,
-  res: Response,
-  next: NextFunction
-) {
+export function authMiddleware(req: AuthRequest, res: Response, next: NextFunction) {
   try {
     const { authorization } = req.headers;
     const token = authorization.split("Bearer ")[1];

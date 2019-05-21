@@ -3,12 +3,20 @@
 // *
 
 import { createMasterUser } from "./createMasterUser";
+import { populateProviders } from "./populateProviders";
 import { MONGODB_URI } from "../configuration/envs";
-import { connect, close } from "../db";
+import { connect, disconnect } from "../db";
+
+const consoleLog = (...args: any[]) => {
+  console.log(...args);
+};
 
 async function run() {
-  const seeds: { [key: string]: () => Promise<void> } = {
+  const seeds: {
+    [key: string]: (consoleLog: (...args: any[]) => void) => Promise<void>;
+  } = {
     createMasterUser,
+    populateProviders,
   };
 
   function listSeeds() {
@@ -35,7 +43,7 @@ async function run() {
     await connect(MONGODB_URI);
 
     console.log(`Running ${seedToRun} seed`);
-    await seeds[seedToRun]();
+    await seeds[seedToRun](consoleLog);
 
     console.log("Seed successfully finished.");
   } catch (err) {
@@ -43,7 +51,7 @@ async function run() {
   }
 
   console.log("Closing database connection.");
-  close();
+  disconnect();
 }
 
 run();

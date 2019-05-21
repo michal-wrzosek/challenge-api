@@ -1,10 +1,10 @@
 import { Router } from "express";
 
-import { getAll } from "../controllers/providers.controller";
+import { getAll, getAllValidation } from "../controllers/providers.controller";
 
 const providersRoutes = Router();
 
 // GET /
-providersRoutes.get("/", getAll);
+providersRoutes.get("/", getAllValidation, getAll);
 
 export default providersRoutes;

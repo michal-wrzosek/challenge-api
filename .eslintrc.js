@@ -16,5 +16,6 @@ module.exports = {
     "@typescript-eslint/no-empty-interface": false,
     "@typescript-eslint/prefer-interface": false,
     "@typescript-eslint/no-object-literal-type-assertion": false,
+    "@typescript-eslint/camelcase": false,
   },
 };

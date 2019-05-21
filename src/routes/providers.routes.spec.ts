@@ -87,27 +87,36 @@ describe("src/routes/providers", () => {
       expect(pagination.nextPage).to.equal(3);
     });
 
-    it("200, OK - pagination, min page and max limit", async () => {
-      await providerFixtures(60);
+    it("400, FAIL - query validation for page and limit", async () => {
+      const res = await request(app).get("/api/v1/providers?page=-1&limit=51");
 
-      const res = await request(app).get("/api/v1/providers?page=-1&limit=100");
+      expect(res.status).to.equal(400);
+      expect(res.body.error.message).to.equal(
+        `Bad Request: "page" must be larger than or equal to 1 and "limit" must be less than or equal to 50`
+      );
+    });
+
+    it("200, OK - max_discharges", async () => {
+      await providerFixtures(50);
+
+      const res = await request(app).get(
+        "/api/v1/providers?limit=50&max_discharges=50"
+      );
       const {
         data: { providers },
-        pagination,
       } = res.body as {
         data: { providers: ProviderProps[] };
         pagination: Pagination;
       };
 
+      console.log(providers);
+
       expect(res.status).to.equal(200);
       expect(providers).to.be.an("array");
-      expect(providers.length).to.equal(50);
-      expect(pagination.page).to.equal(1);
-      expect(pagination.limit).to.equal(50);
-      expect(pagination.totalDocs).to.equal(60);
-      expect(pagination.totalPages).to.equal(2);
-      expect(pagination.prevPage).to.equal(null);
-      expect(pagination.nextPage).to.equal(2);
+
+      expect(providers.filter((p) => p.totalDischarges > 50).length).to.equal(
+        0
+      );
     });
   });
 });

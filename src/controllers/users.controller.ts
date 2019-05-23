@@ -3,7 +3,7 @@ import { Response, Request } from "express";
 import User from "../models/user";
 import { sendError } from "../middlewares/error.middleware";
 import HttpException from "../exceptions/HttpException";
-import { sendAuthError, getToken } from "../middlewares/auth.middleware";
+import { sendAuthError, getToken, AuthRequest } from "../middlewares/auth.middleware";
 
 export function login(req: Request, res: Response) {
   const { email, password } = req.body;
@@ -35,4 +35,10 @@ export function login(req: Request, res: Response) {
       console.error(err);
       return sendError(new HttpException(), res);
     });
+}
+
+export function me(req: AuthRequest, res: Response) {
+  const { _id, email } = req.userData;
+
+  res.status(200).json({ user: { _id, email } });
 }

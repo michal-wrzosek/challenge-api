@@ -9,6 +9,6 @@ const usersRoutes = Router();
 usersRoutes.post("/login", login);
 
 // GET /me
-usersRoutes.post("/me", authMiddleware, me);
+usersRoutes.get("/me", authMiddleware, me);
 
 export default usersRoutes;

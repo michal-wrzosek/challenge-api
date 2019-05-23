@@ -51,7 +51,7 @@ describe("src/routes/users", () => {
 
   describe("GET /api/v1/users/me", () => {
     it("401, OK - Auth failed - when invalid token", async () => {
-      const res = await request(app).post("/api/v1/users/me");
+      const res = await request(app).get("/api/v1/users/me");
 
       const { message } = res.body.error;
       expect(res.status).to.equal(401);
@@ -62,7 +62,7 @@ describe("src/routes/users", () => {
       const { authorizationHeader, _id, email } = await getAuthorizationHeader();
 
       const res = await request(app)
-        .post("/api/v1/users/me")
+        .get("/api/v1/users/me")
         .set("Authorization", authorizationHeader);
 
       const { _id: responseId, email: responseEmail } = res.body.user;

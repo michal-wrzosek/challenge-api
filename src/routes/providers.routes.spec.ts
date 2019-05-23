@@ -7,20 +7,7 @@ import Provider, { ProviderProps } from "../models/provider";
 import { providerFixtures, providersFactoryInstructions } from "../models/provider.fixtures";
 import { fixtureFactory } from "../test/fixtureFactory";
 import { US_STATES } from "../types/USStates";
-import User from "../models/user";
-
-const getAuthorizationHeader = async () => {
-  const email = "test@email.com";
-  const password = "test_PASSW0RD";
-
-  await new User({ email, password }).save();
-
-  const res = await request(app)
-    .post("/api/v1/users/login")
-    .send({ email, password });
-
-  return `Bearer ${res.body.token}`;
-};
+import { getAuthorizationHeader } from "../test/getAuthorizationHeader";
 
 describe("src/routes/providers", () => {
   describe("GET /api/v1/providers", () => {
@@ -32,7 +19,7 @@ describe("src/routes/providers", () => {
     });
 
     it("200, OK - default, empty db", async () => {
-      const authorizationHeader = await getAuthorizationHeader();
+      const { authorizationHeader } = await getAuthorizationHeader();
 
       const res = await request(app)
         .get("/api/v1/providers")
@@ -58,7 +45,7 @@ describe("src/routes/providers", () => {
     });
 
     it("200, OK - default", async () => {
-      const authorizationHeader = await getAuthorizationHeader();
+      const { authorizationHeader } = await getAuthorizationHeader();
       const createdProviders = await providerFixtures(100);
 
       const res = await request(app)
@@ -90,7 +77,7 @@ describe("src/routes/providers", () => {
     });
 
     it("200, OK - pagination, default use", async () => {
-      const authorizationHeader = await getAuthorizationHeader();
+      const { authorizationHeader } = await getAuthorizationHeader();
       await providerFixtures(30);
 
       const res = await request(app)
@@ -116,7 +103,7 @@ describe("src/routes/providers", () => {
     });
 
     it("400, OK - query validation for page and limit", async () => {
-      const authorizationHeader = await getAuthorizationHeader();
+      const { authorizationHeader } = await getAuthorizationHeader();
       const res = await request(app)
         .get("/api/v1/providers?page=-1&limit=51")
         .set("Authorization", authorizationHeader);
@@ -128,7 +115,7 @@ describe("src/routes/providers", () => {
     });
 
     it("200, OK - max_discharges", async () => {
-      const authorizationHeader = await getAuthorizationHeader();
+      const { authorizationHeader } = await getAuthorizationHeader();
       await providerFixtures(50);
 
       const res = await request(app)
@@ -148,7 +135,7 @@ describe("src/routes/providers", () => {
     });
 
     it("200, OK - min_discharges", async () => {
-      const authorizationHeader = await getAuthorizationHeader();
+      const { authorizationHeader } = await getAuthorizationHeader();
       await providerFixtures(50);
 
       const res = await request(app)
@@ -168,7 +155,7 @@ describe("src/routes/providers", () => {
     });
 
     it("200, OK - max_average_covered_charges", async () => {
-      const authorizationHeader = await getAuthorizationHeader();
+      const { authorizationHeader } = await getAuthorizationHeader();
       await providerFixtures(50);
 
       const res = await request(app)
@@ -188,7 +175,7 @@ describe("src/routes/providers", () => {
     });
 
     it("200, OK - min_average_covered_charges", async () => {
-      const authorizationHeader = await getAuthorizationHeader();
+      const { authorizationHeader } = await getAuthorizationHeader();
       await providerFixtures(50);
 
       const res = await request(app)
@@ -208,7 +195,7 @@ describe("src/routes/providers", () => {
     });
 
     it("200, OK - max_average_medicare_payments", async () => {
-      const authorizationHeader = await getAuthorizationHeader();
+      const { authorizationHeader } = await getAuthorizationHeader();
       await providerFixtures(50);
 
       const res = await request(app)
@@ -228,7 +215,7 @@ describe("src/routes/providers", () => {
     });
 
     it("200, OK - min_average_medicare_payments", async () => {
-      const authorizationHeader = await getAuthorizationHeader();
+      const { authorizationHeader } = await getAuthorizationHeader();
       await providerFixtures(50);
 
       const res = await request(app)
@@ -248,7 +235,7 @@ describe("src/routes/providers", () => {
     });
 
     it("200, OK - state", async () => {
-      const authorizationHeader = await getAuthorizationHeader();
+      const { authorizationHeader } = await getAuthorizationHeader();
       const records = fixtureFactory(providersFactoryInstructions, {
         nrOfRecordsToGenerate: 50,
       });
@@ -274,7 +261,7 @@ describe("src/routes/providers", () => {
     });
 
     it("200, OK - fiters combined", async () => {
-      const authorizationHeader = await getAuthorizationHeader();
+      const { authorizationHeader } = await getAuthorizationHeader();
       const records = fixtureFactory(providersFactoryInstructions, {
         nrOfRecordsToGenerate: 50,
       });
@@ -320,7 +307,7 @@ describe("src/routes/providers", () => {
     });
 
     it("200, OK - select one field", async () => {
-      const authorizationHeader = await getAuthorizationHeader();
+      const { authorizationHeader } = await getAuthorizationHeader();
       await providerFixtures(10);
 
       const res = await request(app)
@@ -349,7 +336,7 @@ describe("src/routes/providers", () => {
     });
 
     it("200, OK - select multiple fields", async () => {
-      const authorizationHeader = await getAuthorizationHeader();
+      const { authorizationHeader } = await getAuthorizationHeader();
       await providerFixtures(10);
 
       const query = [
@@ -391,7 +378,7 @@ describe("src/routes/providers", () => {
     });
 
     it("400, OK - when select wrong field", async () => {
-      const authorizationHeader = await getAuthorizationHeader();
+      const { authorizationHeader } = await getAuthorizationHeader();
       await providerFixtures(10);
 
       const res = await request(app)
@@ -408,7 +395,7 @@ describe("src/routes/providers", () => {
     });
 
     it("400, OK - when select wrong fields", async () => {
-      const authorizationHeader = await getAuthorizationHeader();
+      const { authorizationHeader } = await getAuthorizationHeader();
       await providerFixtures(10);
 
       const query = [

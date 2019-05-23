@@ -33,6 +33,7 @@ JSON:
 ```
 
 ## Routes
+
 ### Providers
 
 This route lets you query "Providers" resource.
@@ -179,6 +180,43 @@ JSON:
   - message: "Auth failed"
 ```
 
+#### GET /users/me
+
+This is a token protected endpoint. [More about authentication](#authentication) This enpoint returns current user's data.
+
+**Endpoint:**
+
+```
+GET /api/v1/users/me
+```
+
+**Parameters:**
+
+```
+No parameters expected
+```
+
+**Successful response:**
+
+```
+Status: 200
+
+JSON:
+- user:
+  - _id: string
+  - email: string
+```
+
+**Failed response:**
+
+```
+Status: 401
+
+JSON:
+- error:
+  - message: "Auth failed"
+```
+
 ---
 
 ## Development
@@ -186,24 +224,30 @@ JSON:
 ### Seeds
 
 It is sometimes useful to populate database with some prepared data/fixtures. I created a simple seed CLI runner. Just type:
+
 ```bash
 npm run seed name_of_seed_here
 ```
 
 #### Create Master User Seed
+
 Since this API does not expose any sign-up endpoint we can create a master user by seeds. Just provide user's email and password via ENV and run a seed.
 
 **ENVs:**
+
 - `MASTER_USER_EMAIL`
 - `MASTER_USER_PASSWORD`
 
 **Command to run this seed:**
+
 ```bash
 npm run seed createMasterUser
 ```
 
 #### Populate Providers Seed
+
 For development purposes you can populate your DB with 300 Providers comming from automatically generated fixtures:
+
 ```bash
 npm run seed populateProviders
 ```

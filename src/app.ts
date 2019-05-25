@@ -9,11 +9,15 @@ import notFoundMiddleware from "./middlewares/notFound.middleware";
 import errorMiddleware from "./middlewares/error.middleware";
 import { CORSMiddleware } from "./middlewares/CORS.middleware";
 import providersRoutes from "./routes/providers.routes";
+import { requireHTTPS } from "./middlewares/requireHTTPS.middleware";
 
 const app = express();
 
 // Logging
 if (NODE_ENV !== NODE_ENVS.TEST) app.use(morgan("short"));
+
+// Require HTTPS
+app.use(requireHTTPS);
 
 // Body parsing
 app.use(bodyParser.urlencoded({ extended: false }));

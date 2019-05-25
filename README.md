@@ -26,7 +26,7 @@ https://challenge-api-staging.herokuapp.com/
 
 ## Authentication
 
-Access to some endpoints is limited. In order to gain access to them you'll need a valid JSON Web Token. This token can be obtained by calling [/api/v1/users/login](#post-userslogin) endpoint. Token is active for 1 hour. When calling protected endpoints you need to attach an Autorization header with your token like this:
+Access to some endpoints is limited. In order to gain access to them you'll need a valid JSON Web Token. This token can be obtained by calling [/api/v1/users/login](#post-userslogin) endpoint. Token is active for 1 hour. When calling protected endpoints you need to attach an Authorization header with your token like this:
 
 ```
 Header["Authorization"]: "Bearer your_token_here"
@@ -194,7 +194,7 @@ JSON:
 
 #### GET /users/me
 
-This is a token protected endpoint. [More about authentication](#authentication) This enpoint returns current user's data.
+This is a token protected endpoint. [More about authentication](#authentication) This endpoint returns current user's data.
 
 **Endpoint:**
 
@@ -272,7 +272,7 @@ npm run seed createMasterUser
 
 #### Populate Providers Seed
 
-For development purposes you can populate your DB with 300 Providers comming from automatically generated fixtures:
+For development purposes you can populate your DB with 300 Providers coming from automatically generated fixtures:
 
 ```bash
 npm run seed populateProviders

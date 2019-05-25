@@ -1,16 +1,28 @@
 # Challenge API - REST API
 
+It's a demo API. There is also a [Demo App](https://github.com/michal-wrzosek/challenge-app) using this API.
+
 ---
 
 # Documentation
 
+- [Environments](#environments)
 - [Authentication](#authentication)
 - [Error responses](#error-responses)
 - [Routes](#routes):
   - [Providers](#providers)
   - [Users](#users)
+- [Architecture Design](#architecture-design)
 - [Development](#development)
   - [Seeds](#seeds)
+
+## Environments
+
+**Production:**
+https://challenge-api-production.herokuapp.com/
+
+**Staging:**
+https://challenge-api-staging.herokuapp.com/
 
 ## Authentication
 
@@ -216,6 +228,20 @@ JSON:
 - error:
   - message: "Auth failed"
 ```
+
+---
+
+## Architecture Design
+
+This app was built from scratch (no boilerplate). It's a Typescript project using express.js and mongoose with mongodb. All endpoints were covered by tests. For testing API I used supertest to mock requests to "app". For testing purposes I'm spinning up "mongodb-memory-server" and I'm clearing db for each test. I created a small fixture factory to help me test Providers endpoints. Later on I published an NPM library based on a solution I used building this project - [worp](https://www.npmjs.com/package/worp).
+
+For pagination I used "mongoose-paginate-v2" plugin.
+
+Filtering and projection is made more or less "manually" in a controller.
+
+GitHub repo restricts PRs to master branch to pass Travis CI build.
+
+Master branch is automatically deployed to staging environment on Heroku. Production can be deployed manually.
 
 ---
 
